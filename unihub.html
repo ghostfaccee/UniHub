@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniHub - СФУ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .anim-slide-in {
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans min-h-screen text-gray-800">
+
+    <!-- ================= 1. ЭКРАН АВТОРИЗАЦИИ ================= -->
+    <div id="authScreen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-orange-50 to-emerald-50">
+        <div class="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl border border-orange-100">
+            <div class="text-center mb-6">
+                <img src="https://i.ibb.co/SXB2dFKb/4f46a8d2c8f64b894947e35b95f2afc8-1.png" alt="Логотип СФУ" class="h-32 mx-auto mb-3 object-contain">
+                <h1 class="text-3xl font-extrabold text-orange-600 tracking-tight">UniHub</h1>
+                <p class="text-emerald-700 text-sm font-medium mt-1">Единый сервис Сибирского федерального университета</p>
+            </div>
+
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">ФИО Студента</label>
+                    <input type="text" value="Борисов Максим Валерьевич" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Пароль</label>
+                    <input type="password" value="12345678" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm transition">
+                </div>
+                <button type="button" onclick="showDashboard()" class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition shadow-md active:scale-[0.98]">
+                    Войти через SSO СФУ
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ================= 2. ЭКРАН ДАШБОРДА ================= -->
+    <div id="dashboardScreen" class="hidden p-4 md:p-8 max-w-[1400px] mx-auto">
+
+        <!-- Шапка -->
+        <header class="flex flex-col sm:flex-row justify-between items-center mb-8 bg-white p-5 rounded-2xl shadow-sm border border-orange-100 gap-4">
+            <div class="flex items-center gap-4">
+                <img src="https://i.ibb.co/SXB2dFKb/4f46a8d2c8f64b894947e35b95f2afc8-1.png" alt="Лого СФУ" class="h-20 object-contain">
+                <div class="border-l-2 border-orange-200 pl-4">
+                    <h1 class="text-2xl font-bold text-orange-600 flex items-center gap-2">
+                        UniHub <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-semibold">СФУ</span>
+                    </h1>
+                    <p class="text-xs text-gray-500">Институт космических и информационных технологий</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <div onclick="showProfile()" class="text-right hidden sm:block cursor-pointer hover:opacity-80 transition group" title="Открыть профиль">
+                    <p class="font-bold text-sm text-gray-800 group-hover:text-orange-600 transition">Борисов М. В.</p>
+                    <p class="text-xs text-emerald-600 font-medium">Группа КИ26-11Б • Проф. инженерия ⚙️</p>
+                </div>
+                <button onclick="showProfile()" class="sm:hidden bg-orange-100 text-orange-700 px-3 py-2 rounded-lg text-xs font-bold">
+                    👤 Профиль
+                </button>
+                <button onclick="showError()" class="bg-red-50 text-red-600 border border-red-200 px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-100 transition">
+                    Выйти (Тест ошибки)
+                </button>
+            </div>
+        </header>
+
+        <!-- Основная сетка -->
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-6 items-stretch">
+
+            <!-- ЛЕВАЯ ЧАСТЬ (Виджеты) -->
+            <div class="xl:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Виджет 1: Расписание -->
+                <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border-t-4 border-orange-500 border-x border-b border-gray-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-bold flex items-center gap-2"><span>📅</span> Ближайшая пара</h2>
+                            <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2.5 py-1 rounded-md">Сегодня</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-orange-50/50 p-5 rounded-xl border border-orange-100 gap-4 mb-2">
+                            <div>
+                                <p class="text-2xl font-black text-orange-600">10:15 - 11:50</p>
+                                <p class="text-lg font-bold text-gray-800 mt-1">Программирование на C++ / Python</p>
+                                <p class="text-sm text-emerald-700 font-medium mt-1">📍 ИКИТ, Аудитория 312 • Лекция</p>
+                            </div>
+                            <button onclick="openStub('Расписание занятий СФУ', 'https://r.sfu-kras.ru', 'Интерактивная сетка расписания с фильтрами по неделям и корпусам.')" class="bg-orange-500 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-orange-600 transition shadow-sm whitespace-nowrap text-center">
+                                Полное расписание →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Виджет 2: еКурсы -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-emerald-500 border-x border-b border-gray-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-bold flex items-center gap-2"><span>📚</span> Дедлайны еКурсы</h2>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md">2 задачи</span>
+                        </div>
+                        <ul class="space-y-3 mb-5">
+                            <li class="flex justify-between items-center border-b border-gray-100 pb-2.5">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-800">Лабораторная по SQL</p>
+                                    <p class="text-xs text-gray-400">Базы данных</p>
+                                </div>
+                                <span class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-md font-bold">Завтра</span>
+                            </li>
+                            <li class="flex justify-between items-center border-b border-gray-100 pb-2.5">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-800">Доклад: Древняя Русь</p>
+                                    <p class="text-xs text-gray-400">История</p>
+                                </div>
+                                <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md font-bold">Сдано ✓</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <button onclick="showEcourses()" class="block w-full text-center bg-emerald-600 text-white py-2.5 rounded-xl font-semibold hover:bg-emerald-700 transition shadow-sm">
+                        Перейти в еКурсы →
+                    </button>
+                </div>
+
+                <!-- Виджет 3: Быстрые услуги -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-orange-500 border-x border-b border-gray-100 flex flex-col justify-between relative">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-bold flex items-center gap-2"><span>⚡</span> Экосистема СФУ</h2>
+                            <span class="text-xs text-gray-400">Единое окно</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-4">Быстрый доступ ко всем сервисам университета без поиска ссылок:</p>
+                        
+                        <div class="relative mb-4">
+                            <button onclick="toggleServicesMenu()" class="w-full bg-slate-50 border border-gray-200 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-orange-50 hover:border-orange-200 hover:text-orange-600 transition flex justify-between items-center">
+                                <span id="selectedServiceText">Выберите сервис СФУ...</span>
+                                <span id="menuArrow" class="transform transition-transform">▼</span>
+                            </button>
+                            
+                            <div id="servicesDropdown" class="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 max-h-64 overflow-y-auto">
+                                <a href="#" onclick="showCertificateForm(); return false;" class="block px-4 py-2.5 text-sm hover:bg-orange-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-orange-600">📄 Заказ справок и документов</span> <span class="text-xs text-gray-400 block">Справка об обучении, выписки</span>
+                                </a>
+                                <a href="#" onclick="showEcourses(); return false;" class="block px-4 py-2.5 text-sm hover:bg-emerald-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-emerald-700">📚 еКурсы (Moodle СФУ)</span> <span class="text-xs text-gray-400 block">Мои учебные курсы и материалы</span>
+                                </a>
+                                <a href="#" onclick="openStub('Мой СФУ', 'https://i.sfu-kras.ru', 'Успеваемость, рейтинг БРС, цифровые дипломы и портфолио студента.'); return false;" class="block px-4 py-2.5 text-sm hover:bg-orange-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-orange-600">👤 Мой СФУ (i.sfu-kras.ru)</span> <span class="text-xs text-gray-400 block">Успеваемость, дипломы, портфолио</span>
+                                </a>
+                                <a href="#" onclick="openStub('Деканат СФУ', 'https://dec.sfu-kras.ru', 'Электронные справки, заявления на материальную помощь и академический отпуск.'); return false;" class="block px-4 py-2.5 text-sm hover:bg-orange-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-orange-600">🏫 Деканат (dec)</span> <span class="text-xs text-gray-400 block">Справки и заявления (нужен VPN)</span>
+                                </a>
+                                <a href="#" onclick="openStub('Запись на спорт СФУ', 'https://usport.sfu-kras.ru', 'Бронирование времени в спортзалах, бассейнах и секциях кампуса.'); return false;" class="block px-4 py-2.5 text-sm hover:bg-emerald-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-emerald-700">🏋️ Запись на спорт (usport)</span> <span class="text-xs text-gray-400 block">Спортзалы и бассейны СФУ</span>
+                                </a>
+                                <a href="#" onclick="openStub('СДО / Лицей ФМШ', 'https://sdo.dovuz.sfu-kras.ru', 'Специализированная цифровая образовательная среда.'); return false;" class="block px-4 py-2.5 text-sm hover:bg-blue-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-blue-700">💻 СДО / Лицей ФМШ</span> <span class="text-xs text-gray-400 block">Школьное и спец. обучение</span>
+                                </a>
+                                <a href="#" onclick="openStub('Довуз СФУ', 'https://dovuz.sfu-kras.ru', 'Информация для поступающих и олимпиады.'); return false;" class="block px-4 py-2.5 text-sm hover:bg-orange-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-gray-800">🎓 Довуз СФУ</span> <span class="text-xs text-gray-400 block">Информация для абитуриентов и школьников</span>
+                                </a>
+                                <a href="#" onclick="openStub('Научная библиотека СФУ', 'https://lib.sfu-kras.ru', 'Электронный каталог книг, журналов и баз данных научных изданий.'); return false;" class="block px-4 py-2.5 text-sm hover:bg-emerald-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-emerald-700">📖 Научная библиотека</span> <span class="text-xs text-gray-400 block">Электронный каталог и книги</span>
+                                </a>
+                                <a href="#" onclick="openStub('Расписание занятий', 'https://newtimetable.sfu-kras.ru', 'Актуальное расписание пар по группам и преподавателям.'); return false;" class="block px-4 py-2.5 text-sm hover:bg-orange-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-orange-600">📅 Расписание занятий</span> <span class="text-xs text-gray-400 block">Актуальные пары и аудитории</span>
+                                </a>
+                                <a href="#" onclick="openStub('Карты кампуса СФУ', 'https://gis.sfu-kras.ru', 'Интерактивная карта учебных корпусов, общежитий и инфраструктуры.'); return false;" class="block px-4 py-2.5 text-sm hover:bg-blue-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-blue-700">🗺️ Карты кампуса (GIS)</span> <span class="text-xs text-gray-400 block">Корпуса и общежития СФУ</span>
+                                </a>
+                                <a href="#" onclick="openStub('Подключение к Wi-Fi СФУ', 'https://users.sfu-kras.ru/?page=wifi_vpn&ysclid=mujnphf4i97677179', 'Инструкции по настройке беспроводной сети eduroam в корпусах.'); return false;" class="block px-4 py-2.5 text-sm hover:bg-purple-50 text-gray-700 border-b border-gray-100 transition">
+                                    <span class="font-bold text-purple-700">📶 Подключение к Wi-Fi и сети</span> <span class="text-xs text-gray-400 block">Настройка интернета в СФУ</span>
+                                </a>
+                                <a href="#" onclick="openStub('Главный сайт СФУ', 'https://sfu-kras.ru', 'Официальный портал Сибирского федерального университета.'); return false;" class="block px-4 py-2.5 text-sm hover:bg-gray-50 text-gray-700 transition">
+                                    <span class="font-bold text-gray-800">🌐 Главный сайт СФУ</span> <span class="text-xs text-gray-400 block">Новости и официальный портал</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ПРАВАЯ ЧАСТЬ (Лента уведомлений) -->
+            <div class="xl:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
+                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>🔔</span> Лента событий
+                </h2>
+                <div id="notificationsContainer" class="flex flex-col gap-3 overflow-hidden flex-1 relative">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= 3. ИНТЕРАКТИВНЫЙ ЭКРАН ЕКУРСОВ ================= -->
+    <div id="ecoursesScreen" class="hidden min-h-screen bg-[#181a1b] text-gray-100 transition-colors duration-300">
+        <!-- Шапка еКурсов -->
+        <header id="ecoursesHeader" class="bg-[#22252a] border-b border-gray-800 px-6 py-3 flex justify-between items-center sticky top-0 z-30 shadow-md transition-colors duration-300">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center font-bold text-white text-sm">24</span>
+                    <span class="text-xl font-bold tracking-tight">еКурсы</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button onclick="toggleEcoursesTheme()" id="themeToggleBtn" class="text-lg px-2 py-1 rounded-lg hover:bg-gray-700/50 transition" title="Переключить тему">
+                    🌙
+                </button>
+                <div class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center font-bold text-white text-xs shadow">
+                    БМ
+                </div>
+                <button onclick="showDashboard()" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                    ← В UniHub
+                </button>
+            </div>
+        </header>
+
+        <!-- Контент еКурсов -->
+        <div class="max-w-[1300px] mx-auto p-6 md:p-8">
+            <div class="mb-8">
+                <h1 class="text-3xl font-extrabold mb-1">Мои курсы</h1>
+                <p class="text-xl text-gray-300" id="ecoursesWelcome">Здравствуйте, Максим! 👋</p>
+            </div>
+
+            <!-- Фильтры и сортировка -->
+            <div id="ecoursesToolbar" class="bg-[#22252a] p-4 rounded-xl border border-gray-800 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between transition-colors duration-300">
+                <div class="w-full md:w-auto flex items-center">
+                    <input type="text" id="courseSearchInput" oninput="filterAndRenderCourses()" placeholder="Найти курс..." class="bg-[#181a1b] border border-gray-700 px-4 py-2 rounded-lg text-xs text-white focus:outline-none focus:border-orange-500 w-full md:w-72 transition-colors">
+                </div>
+                <div class="flex flex-wrap gap-3 w-full md:w-auto justify-end">
+                    <select id="courseSortSelect" onchange="filterAndRenderCourses()" class="bg-[#181a1b] border border-gray-700 text-gray-300 px-4 py-2 rounded-lg text-xs font-medium focus:outline-none focus:border-orange-500 cursor-pointer">
+                        <option value="name">Упорядочить по названию курса</option>
+                        <option value="access">По последнему доступу</option>
+                        <option value="date">По дате начала</option>
+                    </select>
+                    
+                    <select id="courseViewSelect" onchange="filterAndRenderCourses()" class="bg-[#181a1b] border border-gray-700 text-gray-300 px-4 py-2 rounded-lg text-xs font-medium focus:outline-none focus:border-orange-500 cursor-pointer">
+                        <option value="card">Карточка</option>
+                        <option value="list">Список</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Динамический контейнер курсов -->
+            <div id="coursesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= 4. ФОРМА ЗАКАЗА СПРАВОК ================= -->
+    <div id="certificateScreen" class="hidden min-h-screen p-4 md:p-8 bg-slate-50 flex items-center justify-center">
+        <div class="max-w-xl w-full bg-white p-8 rounded-2xl shadow-xl border border-orange-100">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+                <h2 class="text-2xl font-extrabold text-gray-900 flex items-center gap-2">
+                    <span>📄</span> Заказ справок и документов
+                </h2>
+                <button onclick="showDashboard()" class="bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl font-bold text-xs hover:bg-gray-200 transition">
+                    ✕ Закрыть
+                </button>
+            </div>
+
+            <form onsubmit="event.preventDefault(); alert('Заявка на справку успешно отправлена в деканат ИКИТ! Статус можно отслеживать в разделе «Мой СФУ».'); showDashboard();" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Тип заказываемого документа</label>
+                    <select class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm bg-white">
+                        <option>Справка с места учебы (о статусе студента)</option>
+                        <option>Справка для военкомата (Приложение № 4)</option>
+                        <option>Справка для пенсионного фонда / соцзащиты</option>
+                        <option>Выписка из зачетно-экзаменационной ведомости</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Количество экземпляров</label>
+                        <input type="number" value="1" min="1" max="5" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Способ получения</label>
+                        <select class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm bg-white">
+                            <option>Электронная копия (на почту СФУ)</option>
+                            <option>Лично в дирекции ИКИТ (пр. Свободный, 79)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Комментарий для деканата</label>
+                    <textarea rows="3" placeholder="Например: Требуется с печатью для предоставления по месту работы..." class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm"></textarea>
+                </div>
+
+                <div class="bg-orange-50 p-4 rounded-xl border border-orange-100 text-xs text-orange-800">
+                    ℹ️ Срок подготовки официальной справки составляет от 1 до 3 рабочих дней. Готовый документ появится в вашем цифровом профиле.
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="showDashboard()" class="flex-1 bg-slate-100 text-gray-700 py-3 rounded-xl font-bold text-sm hover:bg-slate-200 transition">
+                        Отмена
+                    </button>
+                    <button type="submit" class="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold text-sm hover:bg-orange-600 transition shadow-sm">
+                        Подать заявку
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ================= 5. ЭКРАН ПРОФИЛЯ ================= -->
+    <div id="profileScreen" class="hidden p-4 md:p-8 max-w-[1000px] mx-auto">
+        <div class="flex items-center justify-between mb-8 bg-white p-5 rounded-2xl shadow-sm border border-orange-100">
+            <button onclick="showDashboard()" class="bg-orange-50 text-orange-600 px-4 py-2 rounded-xl font-bold text-sm hover:bg-orange-100 transition flex items-center gap-2">
+                <span>←</span> Назад к дашборду
+            </button>
+            <h1 class="text-xl font-bold text-gray-800">Профиль студента СФУ</h1>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-6 md:p-8">
+            <div class="flex flex-col md:flex-row items-center gap-6 border-b border-gray-100 pb-8 mb-8">
+                <div class="w-28 h-28 bg-gradient-to-tr from-orange-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-md">
+                    БМВ
+                </div>
+                <div class="text-center md:text-left">
+                    <h2 class="text-2xl font-extrabold text-gray-900">Борисов Максим Валерьевич</h2>
+                    <p class="text-emerald-700 font-medium text-sm mt-1">Институт космических и информационных технологий (ИКИТ)</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-2 mt-3">
+                        <span class="bg-slate-100 text-gray-800 text-xs px-3 py-1 rounded-full font-bold">Группа КИ26-11Б</span>
+                        <span class="bg-slate-100 text-gray-800 text-xs px-3 py-1 rounded-full font-bold">Программная инженерия</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
+                    <label class="block text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Номер студенческого билета</label>
+                    <input type="text" value="№ 26051489" class="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-sm font-bold text-gray-800 focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
+                    <label class="block text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Академическая группа</label>
+                    <p class="text-sm font-bold text-gray-800 py-1.5">КИ26-11Б</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
+                    <label class="block text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Корпоративная почта</label>
+                    <input type="text" value="m.borisov@sfu-kras.ru" class="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-sm font-bold text-gray-800 focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-gray-200">
+                    <label class="block text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Телефон</label>
+                    <input type="text" value="+7 (993) 456-78-90" class="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-sm font-bold text-gray-800 focus:ring-2 focus:ring-orange-500 focus:outline-none transition">
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button onclick="alert('Изменения успешно сохранены!')" class="bg-orange-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-orange-600 transition shadow-sm">
+                    Сохранить изменения
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= 6. ЭКРАН ОШИБКИ (401) ================= -->
+    <div id="errorScreen" class="hidden min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 to-orange-50">
+        <div class="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl border-t-8 border-orange-500 text-center">
+            <img src="https://i.ibb.co/SXB2dFKb/4f46a8d2c8f64b894947e35b95f2afc8-1.png" alt="Лого СФУ" class="h-32 mx-auto mb-6 object-contain">
+            <div class="w-20 h-20 bg-red-50 border-2 border-red-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                <span class="text-4xl">🔒</span>
+            </div>
+            <h1 class="text-2xl font-extrabold text-gray-800 mb-2">Доступ закрыт</h1>
+            <h2 class="text-lg font-semibold text-red-500 mb-4">Ошибка 401</h2>
+            <p class="text-gray-600 text-sm mb-8 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                Вы попытались получить доступ к защищенному разделу. Войдите через Единую систему СФУ.
+            </p>
+            <button onclick="showAuth()" class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3.5 rounded-xl font-bold transition">
+                Перейти к авторизации
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ================= 7. ЭКРАН ЗАГЛУШКИ ДЛЯ СЕРВИСОВ ================= -->
+    <div id="stubScreen" class="hidden min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 to-emerald-50">
+        <div class="max-w-lg w-full bg-white p-8 rounded-2xl shadow-xl border-t-8 border-emerald-500 text-center">
+            <img src="https://i.ibb.co/SXB2dFKb/4f46a8d2c8f64b894947e35b95f2afc8-1.png" alt="Лого СФУ" class="h-28 mx-auto mb-5 object-contain">
+            <div class="w-16 h-16 bg-emerald-50 border-2 border-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-3xl">🔗</span>
+            </div>
+            <h2 id="stubTitle" class="text-2xl font-extrabold text-gray-900 mb-2">Сервис СФУ</h2>
+            <p id="stubDescription" class="text-gray-600 text-sm mb-4">Модуль интеграции с внешним ресурсом университета.</p>
+            
+            <div class="bg-slate-50 p-3 rounded-xl border border-gray-200 text-xs text-gray-500 mb-6 font-mono break-all" id="stubUrlText">
+                https://sfu-kras.ru
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="showDashboard()" class="flex-1 bg-slate-200 text-gray-700 py-3 rounded-xl font-bold text-sm hover:bg-slate-300 transition">
+                    ← Назад в UniHub
+                </button>
+                <a id="stubExternalLink" href="#" target="_blank" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-emerald-700 transition text-center shadow-sm">
+                    Открыть оригинал ↗
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        const authScreen = document.getElementById('authScreen');
+        const dashboardScreen = document.getElementById('dashboardScreen');
+        const profileScreen = document.getElementById('profileScreen');
+        const errorScreen = document.getElementById('errorScreen');
+        const stubScreen = document.getElementById('stubScreen');
+        const ecoursesScreen = document.getElementById('ecoursesScreen');
+        const certificateScreen = document.getElementById('certificateScreen');
+        
+        const stubTitle = document.getElementById('stubTitle');
+        const stubDescription = document.getElementById('stubDescription');
+        const stubUrlText = document.getElementById('stubUrlText');
+        const stubExternalLink = document.getElementById('stubExternalLink');
+
+        const notifContainer = document.getElementById('notificationsContainer');
+        const servicesDropdown = document.getElementById('servicesDropdown');
+        const menuArrow = document.getElementById('menuArrow');
+
+        let notifInterval;
+        let notifIndex = 0;
+
+        const notificationsData = [
+            { icon: '💰', title: 'Стипендия', desc: 'Начислена государственная стипендия: +4 200 ₽.', bg: 'bg-emerald-50', color: 'text-emerald-700', border: 'border-emerald-200' },
+            { icon: '⚠️', title: 'Внимание: Дедлайн', desc: 'Завтра истекает срок сдачи задачи на LeetCode (алгоритмы).', bg: 'bg-red-50', color: 'text-red-700', border: 'border-red-200' },
+            { icon: '🆔', title: 'Цифровой пропуск', desc: 'Проход в корпус ИКИТ зафиксирован в турникете.', bg: 'bg-blue-50', color: 'text-blue-700', border: 'border-blue-200' },
+            { icon: '🏠', title: 'Общежитие № 30', desc: 'Не забудьте оплатить проживание за следующий месяц.', bg: 'bg-orange-50', color: 'text-orange-700', border: 'border-orange-200' },
+            { icon: '📊', title: 'Новая оценка', desc: 'Введение в проф. деятельность — проверено. Отлично.', bg: 'bg-emerald-50', color: 'text-emerald-700', border: 'border-emerald-200' }
+        ];
+
+        // Данные еКурсов для сортировки и отображения
+        let ecoursesTheme = 'dark';
+        const coursesData = [
+            { id: 1, name: "Алгебра и геометрия 2026", dept: "каф. Прикладной математики и анализа данных", progress: 18, access: "2026-09-26", start: "2026-09-01", visualClass: "bg-gradient-to-r from-slate-800 to-slate-900", visualContent: "<span class='text-4xl font-serif italic text-gray-300'>2a / O</span>" },
+            { id: 2, name: "Введение в профессиональную деятельность", dept: "каф. Программной инженерии", progress: 50, access: "2026-09-27", start: "2026-09-01", visualClass: "bg-gradient-to-br from-amber-600 to-orange-700", visualContent: "<div class='absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]'></div>" },
+            { id: 3, name: "Иностранный язык (1 семестр)", dept: "каф. Разговорного иностранного языка", progress: 100, access: "2026-09-24", start: "2026-09-01", visualClass: "bg-gradient-to-r from-blue-900 via-red-900 to-blue-900", visualContent: "<span class='text-xs font-bold text-gray-300'>🇬🇧 London / UK</span>" },
+            { id: 4, name: "Информатика", dept: "каф. Программной инженерии", progress: 35, access: "2026-09-25", start: "2026-09-01", visualClass: "bg-gradient-to-tr from-blue-950 to-cyan-900", visualContent: "<span class='font-mono text-[10px] text-cyan-400'>010101110 11010101</span>" },
+            { id: 5, name: "Курс «Знакомство» для студентов первого курса", dept: "Департаменты, управления, комплексы и общеун...", progress: 100, access: "2026-08-30", start: "2026-08-25", visualClass: "bg-gradient-to-r from-slate-800 to-zinc-900", visualContent: "<span class='text-xs text-gray-300 font-medium'>🎯 СФУ Первокурсник</span>" },
+            { id: 6, name: "Математический анализ. Семестр 1 (09.03.04)", dept: "каф. Прикладной математики и анализа данных", progress: 25, access: "2026-09-27", start: "2026-09-01", visualClass: "bg-gradient-to-tr from-slate-900 to-indigo-950", visualContent: "<span class='font-serif text-xl text-indigo-300'>∫ f(x) dx</span>" }
+        ];
+
+        function hideAllScreens() {
+            authScreen.classList.add('hidden');
+            dashboardScreen.classList.add('hidden');
+            profileScreen.classList.add('hidden');
+            errorScreen.classList.add('hidden');
+            stubScreen.classList.add('hidden');
+            ecoursesScreen.classList.add('hidden');
+            certificateScreen.classList.add('hidden');
+        }
+
+        function pushNotification() {
+            const data = notificationsData[notifIndex % notificationsData.length];
+            const el = document.createElement('div');
+            el.className = `p-3 rounded-xl border ${data.border} ${data.bg} anim-slide-in flex-shrink-0`;
+            el.innerHTML = `
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-base">${data.icon}</span>
+                    <span class="text-sm font-bold ${data.color}">${data.title}</span>
+                </div>
+                <p class="text-xs text-gray-700 font-medium leading-relaxed">${data.desc}</p>
+            `;
+            notifContainer.prepend(el);
+            if (notifContainer.children.length > 4) {
+                notifContainer.removeChild(notifContainer.lastChild);
+            }
+            notifIndex++;
+        }
+
+        function toggleServicesMenu() {
+            servicesDropdown.classList.toggle('hidden');
+            menuArrow.classList.toggle('rotate-180');
+        }
+
+        function openStub(title, url, description) {
+            clearInterval(notifInterval);
+            hideAllScreens();
+            stubTitle.textContent = title;
+            stubDescription.textContent = description || 'Этот официальный сервис интегрирован в экосистему UniHub СФУ.';
+            stubUrlText.textContent = url;
+            stubExternalLink.href = url;
+            stubScreen.classList.remove('hidden');
+            servicesDropdown.classList.add('hidden');
+            menuArrow.classList.remove('rotate-180');
+        }
+
+        // Интерактивная логика еКурсов
+        function showEcourses() {
+            clearInterval(notifInterval);
+            hideAllScreens();
+            ecoursesScreen.classList.remove('hidden');
+            servicesDropdown.classList.add('hidden');
+            menuArrow.classList.remove('rotate-180');
+            filterAndRenderCourses();
+        }
+
+        function toggleEcoursesTheme() {
+            ecoursesTheme = ecoursesTheme === 'dark' ? 'light' : 'dark';
+            const themeBtn = document.getElementById('themeToggleBtn');
+            const header = document.getElementById('ecoursesHeader');
+            const toolbar = document.getElementById('ecoursesToolbar');
+            const searchInput = document.getElementById('courseSearchInput');
+            const sortSelect = document.getElementById('courseSortSelect');
+            const viewSelect = document.getElementById('courseViewSelect');
+
+            if (ecoursesTheme === 'light') {
+                themeBtn.textContent = '☀️';
+                ecoursesScreen.className = 'min-h-screen bg-slate-100 text-gray-900 transition-colors duration-300';
+                header.className = 'bg-white border-b border-gray-200 px-6 py-3 flex justify-between items-center sticky top-0 z-30 shadow-sm transition-colors duration-300 text-gray-900';
+                toolbar.className = 'bg-white p-4 rounded-xl border border-gray-200 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between transition-colors duration-300 shadow-sm';
+                searchInput.className = 'bg-slate-50 border border-gray-300 px-4 py-2 rounded-lg text-xs text-gray-900 focus:outline-none focus:border-orange-500 w-full md:w-72 transition-colors';
+                sortSelect.className = 'bg-slate-50 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-xs font-medium focus:outline-none focus:border-orange-500 cursor-pointer';
+                viewSelect.className = 'bg-slate-50 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-xs font-medium focus:outline-none focus:border-orange-500 cursor-pointer';
+            } else {
+                themeBtn.textContent = '🌙';
+                ecoursesScreen.className = 'min-h-screen bg-[#181a1b] text-gray-100 transition-colors duration-300';
+                header.className = 'bg-[#22252a] border-b border-gray-800 px-6 py-3 flex justify-between items-center sticky top-0 z-30 shadow-md transition-colors duration-300 text-gray-100';
+                toolbar.className = 'bg-[#22252a] p-4 rounded-xl border border-gray-800 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between transition-colors duration-300';
+                searchInput.className = 'bg-[#181a1b] border border-gray-700 px-4 py-2 rounded-lg text-xs text-white focus:outline-none focus:border-orange-500 w-full md:w-72 transition-colors';
+                sortSelect.className = 'bg-[#181a1b] border border-gray-700 text-gray-300 px-4 py-2 rounded-lg text-xs font-medium focus:outline-none focus:border-orange-500 cursor-pointer';
+                viewSelect.className = 'bg-[#181a1b] border border-gray-700 text-gray-300 px-4 py-2 rounded-lg text-xs font-medium focus:outline-none focus:border-orange-500 cursor-pointer';
+            }
+            filterAndRenderCourses();
+        }
+
+        function filterAndRenderCourses() {
+            const query = document.getElementById('courseSearchInput').value.toLowerCase();
+            const sortBy = document.getElementById('courseSortSelect').value;
+            const viewMode = document.getElementById('courseViewSelect').value;
+            const container = document.getElementById('coursesContainer');
+
+            // Фильтрация по поиску
+            let filtered = coursesData.filter(c => c.name.toLowerCase().includes(query) || c.dept.toLowerCase().includes(query));
+
+            // Сортировка
+            filtered.sort((a, b) => {
+                if (sortBy === 'name') return a.name.localeCompare(b.name);
+                if (sortBy === 'access') return new Date(b.access) - new Date(a.access);
+                if (sortBy === 'date') return new Date(a.start) - new Date(b.start);
+                return 0;
+            });
+
+            // Рендеринг в зависимости от вида (Карточка / Список)
+            container.innerHTML = '';
+            if (viewMode === 'list') {
+                container.className = 'flex flex-col gap-3';
+                filtered.forEach(c => {
+                    const isLight = ecoursesTheme === 'light';
+                    const item = document.createElement('div');
+                    item.className = `${isLight ? 'bg-white border-gray-200 text-gray-800 hover:bg-slate-50' : 'bg-[#22252a] border-gray-800 text-white hover:border-gray-700'} p-4 rounded-xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition`;
+                    item.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg ${c.visualClass} flex items-center justify-center text-xs font-bold shrink-0">${c.id}</div>
+                            <div>
+                                <h3 class="font-bold text-sm mb-0.5">${c.name}</h3>
+                                <p class="text-xs opacity-60">${c.dept} • Последний доступ: ${c.access}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                            <div class="w-32 bg-gray-700 h-2 rounded-full overflow-hidden hidden sm:block">
+                                <div class="bg-orange-500 h-full" style="width: ${c.progress}%"></div>
+                            </div>
+                            <span class="text-xs font-bold ${c.progress === 100 ? 'text-emerald-500' : 'text-orange-500'}">${c.progress}%</span>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            } else {
+                container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+                filtered.forEach(c => {
+                    const isLight = ecoursesTheme === 'light';
+                    const card = document.createElement('div');
+                    card.className = `${isLight ? 'bg-white border-gray-200 text-gray-900 shadow-sm' : 'bg-[#22252a] border-gray-800 text-white'} rounded-xl border overflow-hidden flex flex-col justify-between hover:border-gray-700 transition`;
+                    card.innerHTML = `
+                        <div>
+                            <div class="h-36 ${c.visualClass} relative p-4 flex items-center justify-center border-b ${isLight ? 'border-gray-100' : 'border-gray-800'}">
+                                ${c.visualContent}
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-base mb-1">${c.name}</h3>
+                                <p class="text-xs opacity-60">${c.dept}</p>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            <div class="w-full bg-gray-700/30 h-1.5 rounded-full overflow-hidden mb-2">
+                                <div class="${c.progress === 100 ? 'bg-emerald-500' : 'bg-orange-500'} h-full" style="width: ${c.progress}%"></div>
+                            </div>
+                            <p class="text-xs ${c.progress === 100 ? 'text-emerald-500 font-semibold' : 'opacity-60'}">${c.progress === 100 ? 'Пройдено / 100%' : c.progress + '% выполнено'}</p>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+        }
+
+        function showCertificateForm() {
+            clearInterval(notifInterval);
+            hideAllScreens();
+            certificateScreen.classList.remove('hidden');
+            servicesDropdown.classList.add('hidden');
+            menuArrow.classList.remove('rotate-180');
+        }
+
+        function showDashboard() {
+            hideAllScreens();
+            dashboardScreen.classList.remove('hidden');
+            notifContainer.innerHTML = '';
+            notifIndex = 0;
+            clearInterval(notifInterval);
+            pushNotification();
+            notifInterval = setInterval(pushNotification, 3500);
+        }
+
+        function showProfile() {
+            clearInterval(notifInterval);
+            hideAllScreens();
+            profileScreen.classList.remove('hidden');
+        }
+
+        function showError() {
+            clearInterval(notifInterval);
+            hideAllScreens();
+            errorScreen.classList.remove('hidden');
+        }
+
+        function showAuth() {
+            hideAllScreens();
+            authScreen.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
